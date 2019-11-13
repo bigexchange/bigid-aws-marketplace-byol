@@ -1,0 +1,232 @@
+version: "3.2"
+
+volumes:
+    bigid-mq-data:
+      external: true
+    bigid-scanner-data:
+      external: true
+
+services:
+  bigid-ui:
+    image: bigid/bigid-ui:staging
+    ports:
+      - "443:443"
+    links:
+      - bigid-web
+    environment:
+     - TZ
+    container_name: bigid-ui
+
+  bigid-web:
+    image: bigid/bigid-web:staging
+    expose:
+      - "3000"
+    links:
+     - bigid-orch
+    container_name: bigid-web
+    extra_hosts:
+      - bigid-mongo:${BIGID_MONGO_HOST_EXT}
+    environment:
+      - DEFAULT_BIGID_USER
+      - DEFAULT_BIGID_PW
+      - BIGID_UI_HOST_EXT
+      - BIGID_UI_PORT_EXT
+      - BIGID_MONGO_USER
+      - BIGID_MONGO_PWD
+      - BIGID_MONGO_SSL
+      - BIGID_MONGO_SSL_CA_PATH
+      - BIGID_MONGO_SSL_CLIENT_CERT_PATH
+      - BIGID_MONGO_SSL_CLIENT_KEY_PATH
+      - BIGID_MONGO_SSL_DISABLE_HOSTNAME_VERIFICATION
+      - SECRET_KEY
+      - TOKEN_EXPIRATION_IN_MINUTES
+      - MONGO_EXTERNAL_FULL_URL
+      - SHOW_MOCK_APPLICATIONS
+      - PII_SUMMARY_SCALE_ENABLED
+      - TZ
+      - BIG_ID_REPORT_LANGUAGE
+      - BIGID_SAML_PRIVATE_CERT_PATH
+      - BIGID_PRODUCT_TYPE
+      - ENTITY_LEVEL_TAGGING_SUPPORTED
+    restart: on-failure:5
+
+  bigid-orch:
+    image: bigid/bigid-orch:staging
+    expose:
+      - "3001"
+    links:
+      - bigid-scanner
+      - bigid-mq
+    container_name: bigid-orch
+    extra_hosts:
+      - bigid-mongo:${BIGID_MONGO_HOST_EXT}
+    environment:
+      - BIGID_MONGO_USER
+      - BIGID_MONGO_PWD
+      - BIGID_MONGO_SSL
+      - BIGID_MONGO_SSL_CA_PATH
+      - BIGID_MONGO_SSL_CLIENT_CERT_PATH
+      - BIGID_MONGO_SSL_CLIENT_KEY_PATH
+      - BIGID_MONGO_SSL_DISABLE_HOSTNAME_VERIFICATION
+      - BIGID_MQ_USER
+      - BIGID_MQ_PWD
+      - SECRET_KEY
+      - MONGO_EXTERNAL_FULL_URL
+      - MONGO_PUBLIC_FULL_URL
+      - ORCHESTRATOR_URL_EXT # If the Scanner is on a different Docker host, preferably Internal IP.
+      - ORCHESTRATOR_URL_PUBLIC # Public IP: For Hadoop and EMR, in case Hadoop / EMR cluster are outside the VPC. If not set, hadoop callback URL will use ORCHESTRATOR_URL_EXT.
+      - BIGID_MONGO_HOST_EXT
+      - BIGID_MONGO_HOST_PUBLIC # Same as up.
+      - SAVE_SCANNED_IDENTITIES_AS_PII_FINDINGS
+      - SCANNED_VALUES_IGNORE_LIST
+      - TRUST_SELF_SIGNED_CERTS
+      - IS_CALC_PSEUDO_PII
+      - JIT_FILTER_LOW_CONFIDENCE_FACTOR
+      - SAR_ONLY_STRICT_MATCHES
+      - LINEAGE_ATTRIBUTES_BY_CONFIDENCE
+      - METADATA_ACL_SCAN_ENABLED
+      - PII_SUMMARY_SCALE_ENABLED
+      - DATA_SOURCE_ACL_SCAN_ENABLED
+      - TZ
+      - CONCURRENT_CORRELATION
+      - CORRELATION_RECOVERY_SCHEDULER_FLAG
+      - NER_CLASSIFIER_ENABLED_FEATURE_FLAG
+      - IDENTITY_RESOLUTION_ENABLED
+      - RUN_RETENTION_POLICY_PROCESS
+    hostname: bigid-orch
+    restart: on-failure:5
+
+  bigid-orch2:
+    image: bigid/bigid-orch:staging
+    expose:
+      - "3003"
+    links:
+      - bigid-scanner
+      - bigid-mq
+    container_name: bigid-orch2
+    extra_hosts:
+      - bigid-mongo:${BIGID_MONGO_HOST_EXT}
+    environment:
+      - BIGID_MONGO_USER
+      - BIGID_MONGO_PWD
+      - BIGID_MONGO_SSL
+      - BIGID_MONGO_SSL_CA_PATH
+      - BIGID_MONGO_SSL_CLIENT_CERT_PATH
+      - BIGID_MONGO_SSL_CLIENT_KEY_PATH
+      - BIGID_MONGO_SSL_DISABLE_HOSTNAME_VERIFICATION
+      - BIGID_MQ_USER
+      - BIGID_MQ_PWD
+      - SECRET_KEY
+      - MONGO_EXTERNAL_FULL_URL
+      - ORCHESTRATOR_URL_EXT # If the Scanner is on a different Docker host, preferably Internal IP.
+      - ORCHESTRATOR_URL_PUBLIC # Public IP: For Hadoop and EMR, in case Hadoop / EMR cluster are outside the VPC. If not set, hadoop callback URL will use ORCHESTRATOR_URL_EXT.
+      - BIGID_MONGO_HOST_EXT
+      - BIGID_MONGO_HOST_PUBLIC # Same as up.
+      - SAVE_SCANNED_IDENTITIES_AS_PII_FINDINGS
+      - SCANNED_VALUES_IGNORE_LIST
+      - TRUST_SELF_SIGNED_CERTS
+      - PORT=3003
+      - IS_ORCH2=true
+      - CONCURRENT_CORRELATION
+      - TZ
+    hostname: bigid-orch2
+    restart: on-failure:5
+
+#  bigid-corr:
+#    image: bigid/bigid-corr:staging
+#    expose:
+#      - "3002"
+#    links:
+#      - bigid-orch
+#    container_name: bigid-corr
+#    extra_hosts:
+#      - bigid-mongo:${BIGID_MONGO_HOST_EXT}
+#    environment:
+#      - BIGID_MONGO_USER
+#      - BIGID_MONGO_PWD
+#      - BIGID_MONGO_SSL
+#      - BIGID_MONGO_SSL_CA_PATH
+#      - BIGID_MONGO_SSL_CLIENT_CERT_PATH
+#      - BIGID_MONGO_SSL_CLIENT_KEY_PATH
+#      - BIGID_MONGO_SSL_DISABLE_HOSTNAME_VERIFICATION
+#      - MONGO_EXTERNAL_FULL_URL
+#      - DELETE_FINDINGS_AFTER_CORRELATION
+#      - TZ
+#      - CONCURRENT_CORRELATION
+#    hostname: bigid-corr
+#    restart: on-failure:5
+
+  bigid-scanner:
+    image: bigid/bigid-scanner:staging
+    expose:
+      - "9999"
+    container_name: bigid-scanner
+    user: bigid
+    hostname: bigid-scanner
+    environment:
+      - SCANNER_JAVA_OPTS=-Xmx16g
+      - THREAD_POOL_SIZE
+      - SCANNER_THREADS
+      - ORCH_ASYNCH
+      - BIGID_USER
+      - IGNORE_MEDIA_TYPE # list of Tika MediaType that overwrite as MediaType.TEXT_PLAIN
+      - BIGID_PASSWORD
+      - SCANNER_HOST_NAME
+      - SCANNER_GROUP_NAME
+      - BIGID_UI_HOST_EXT
+      - BIGID_UI_PORT_EXT
+      - BIGID_MQ_USER
+      - BIGID_MQ_PWD
+      - HADOOP_DIST
+      - TZ
+      - S3_USE_CUSTOM_REGION=${S3_USE_CUSTOM_REGION:-false}
+      - S3_AWS_REGION
+    privileged: true
+    volumes:
+      - bigid-scanner-data:/etc/scanner
+    restart: on-failure:5
+
+  bigid-mq:
+      image: rabbitmq:3.6.16-management
+      ports:
+        - "15671:15671"
+        - "5671:5671"
+      container_name: bigid-mq
+      hostname: rabbitmq
+      volumes:
+        - bigid-mq-data:/etc/rabbitmq
+        - bigid-mq-data:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
+      restart: on-failure:5
+      environment:
+        - TZ
+
+  bigid-corr-new:
+    image: bigid/bigid-corr-new:staging
+    expose:
+      - "7082"
+    container_name: bigid-corr-new
+    extra_hosts:
+      - bigid-mongo:${BIGID_MONGO_HOST_EXT}
+    environment:
+      - BIGID_MONGO_USER
+      - BIGID_MONGO_PWD
+      - BIGID_MONGO_SSL
+      - BIGID_MONGO_SSL_DISABLE_HOSTNAME_VERIFICATION
+      - BIGID_MQ_USER
+      - BIGID_MQ_PWD
+      - MONGO_EXTERNAL_FULL_URL
+      - BIGID_MONGO_HOST_EXT
+      - BIGID_IGNITE_HOST_EXT
+      - NEW_CORR_JVM_OPTS=${NEW_CORR_JVM_OPTS:--server -Xmx10g -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:+ScavengeBeforeFullGC -XX:+DisableExplicitGC}
+      - NEW_CORR_JVM_SSL_OPTS
+      - SPRING_PROFILES_ACTIVE
+      - GENERATE_IDENTITIES_ON_START_UP
+    restart: on-failure:5
+#    ports:
+#      - 7082:7082 # new corr restful API
+#      - 10800:10800 # ignite SQL port number.
+#      - 49112:49112 # JMX port number.
+#      - 11211:11211
+#      - 47100:47100 # communication SPI port number.
+#      - 47400:47400
+#      - "47500-47509:47500-47509" # discovery SPI port number.
