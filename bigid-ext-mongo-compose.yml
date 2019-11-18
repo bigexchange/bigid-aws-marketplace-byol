@@ -28,6 +28,8 @@ services:
     extra_hosts:
       - bigid-mongo:${BIGID_MONGO_HOST_EXT}
     environment:
+      - DEFAULT_BIGID_USER
+      - DEFAULT_BIGID_PW            
       - BIGID_UI_HOST_EXT
       - BIGID_UI_PORT_EXT
       - BIGID_MONGO_USER
