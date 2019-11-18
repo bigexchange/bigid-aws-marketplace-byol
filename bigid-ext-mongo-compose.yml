@@ -8,7 +8,7 @@ volumes:
 
 services:
   bigid-ui:
-    image: bigid/bigid-ui:staging
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-ui:${BIGID_VERSION}
     ports:
       - "443:443"
     links:
@@ -16,9 +16,10 @@ services:
     environment:
      - TZ
     container_name: bigid-ui
+    restart: always
 
   bigid-web:
-    image: bigid/bigid-web:staging
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-web:${BIGID_VERSION}
     expose:
       - "3000"
     links:
@@ -27,8 +28,6 @@ services:
     extra_hosts:
       - bigid-mongo:${BIGID_MONGO_HOST_EXT}
     environment:
-      - DEFAULT_BIGID_USER
-      - DEFAULT_BIGID_PW
       - BIGID_UI_HOST_EXT
       - BIGID_UI_PORT_EXT
       - BIGID_MONGO_USER
@@ -40,18 +39,28 @@ services:
       - BIGID_MONGO_SSL_DISABLE_HOSTNAME_VERIFICATION
       - SECRET_KEY
       - TOKEN_EXPIRATION_IN_MINUTES
+      - UI_IDLE_TIMEOUT_IN_MINUTES
+      - RESIDENCY_STATES_FIRST
       - MONGO_EXTERNAL_FULL_URL
       - SHOW_MOCK_APPLICATIONS
       - PII_SUMMARY_SCALE_ENABLED
       - TZ
       - BIG_ID_REPORT_LANGUAGE
       - BIGID_SAML_PRIVATE_CERT_PATH
+      - HIDE_ATTRIBUTE_PURPOSE_OF_USE
       - BIGID_PRODUCT_TYPE
       - ENTITY_LEVEL_TAGGING_SUPPORTED
-    restart: on-failure:5
+      - USE_EXTENDED_PERMISSIONS
+      - NEW_RELIC_LICENSE_KEY
+      - MONITORING_CUSTOMER_NAME
+      - APPEND_TO_JSON_LOGS
+      - MICROSOFT_GRAPH_API_PAGE_SIZE
+      - DATA_CATALOG_ENABLED
+      - METADATA_CLASSIFIER_ENABLED
+    restart: always
 
   bigid-orch:
-    image: bigid/bigid-orch:staging
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-orch:${BIGID_VERSION}
     expose:
       - "3001"
     links:
@@ -93,11 +102,16 @@ services:
       - NER_CLASSIFIER_ENABLED_FEATURE_FLAG
       - IDENTITY_RESOLUTION_ENABLED
       - RUN_RETENTION_POLICY_PROCESS
+      - SCAN_PARTS_ENABLED
+      - NEW_RELIC_LICENSE_KEY
+      - MONITORING_CUSTOMER_NAME
+      - APPEND_TO_JSON_LOGS
+      - METADATA_CLASSIFIER_ENABLED
     hostname: bigid-orch
-    restart: on-failure:5
+    restart: always
 
   bigid-orch2:
-    image: bigid/bigid-orch:staging
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-orch:${BIGID_VERSION}
     expose:
       - "3003"
     links:
@@ -125,46 +139,27 @@ services:
       - SAVE_SCANNED_IDENTITIES_AS_PII_FINDINGS
       - SCANNED_VALUES_IGNORE_LIST
       - TRUST_SELF_SIGNED_CERTS
+      - NER_CLASSIFIER_ENABLED_FEATURE_FLAG
       - PORT=3003
       - IS_ORCH2=true
       - CONCURRENT_CORRELATION
       - TZ
+      - NEW_RELIC_LICENSE_KEY
+      - MONITORING_CUSTOMER_NAME
+      - APPEND_TO_JSON_LOGS
+      - METADATA_CLASSIFIER_ENABLED
     hostname: bigid-orch2
-    restart: on-failure:5
-
-#  bigid-corr:
-#    image: bigid/bigid-corr:staging
-#    expose:
-#      - "3002"
-#    links:
-#      - bigid-orch
-#    container_name: bigid-corr
-#    extra_hosts:
-#      - bigid-mongo:${BIGID_MONGO_HOST_EXT}
-#    environment:
-#      - BIGID_MONGO_USER
-#      - BIGID_MONGO_PWD
-#      - BIGID_MONGO_SSL
-#      - BIGID_MONGO_SSL_CA_PATH
-#      - BIGID_MONGO_SSL_CLIENT_CERT_PATH
-#      - BIGID_MONGO_SSL_CLIENT_KEY_PATH
-#      - BIGID_MONGO_SSL_DISABLE_HOSTNAME_VERIFICATION
-#      - MONGO_EXTERNAL_FULL_URL
-#      - DELETE_FINDINGS_AFTER_CORRELATION
-#      - TZ
-#      - CONCURRENT_CORRELATION
-#    hostname: bigid-corr
-#    restart: on-failure:5
+    restart: always
 
   bigid-scanner:
-    image: bigid/bigid-scanner:staging
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-scanner:${BIGID_VERSION}
     expose:
       - "9999"
     container_name: bigid-scanner
     user: bigid
     hostname: bigid-scanner
     environment:
-      - SCANNER_JAVA_OPTS=-Xmx16g
+      - SCANNER_JAVA_OPTS
       - THREAD_POOL_SIZE
       - SCANNER_THREADS
       - ORCH_ASYNCH
@@ -179,12 +174,16 @@ services:
       - BIGID_MQ_PWD
       - HADOOP_DIST
       - TZ
+      - ENABLE_GENERIC_REST_API_CONNECTOR=${ENABLE_GENERIC_REST_API_CONNECTOR:-false}
       - S3_USE_CUSTOM_REGION=${S3_USE_CUSTOM_REGION:-false}
       - S3_AWS_REGION
+      - NEW_RELIC_LICENSE_KEY
+      - MONITORING_CUSTOMER_NAME
+      - APPEND_TO_JSON_LOGS
     privileged: true
     volumes:
       - bigid-scanner-data:/etc/scanner
-    restart: on-failure:5
+    restart: always
 
   bigid-mq:
       image: rabbitmq:3.6.16-management
@@ -199,9 +198,12 @@ services:
       restart: on-failure:5
       environment:
         - TZ
+        - NEW_RELIC_LICENSE_KEY
+        - MONITORING_CUSTOMER_NAME
+        - APPEND_TO_JSON_LOGS
 
   bigid-corr-new:
-    image: bigid/bigid-corr-new:staging
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-corr-new:${BIGID_VERSION}
     expose:
       - "7082"
     container_name: bigid-corr-new
@@ -221,7 +223,11 @@ services:
       - NEW_CORR_JVM_SSL_OPTS
       - SPRING_PROFILES_ACTIVE
       - GENERATE_IDENTITIES_ON_START_UP
-    restart: on-failure:5
+      - NEW_RELIC_LICENSE_KEY
+      - MONITORING_CUSTOMER_NAME
+      - APPEND_TO_JSON_LOGS
+      - NUMBERS_LENGTH_THRESHOLD
+    restart: always
 #    ports:
 #      - 7082:7082 # new corr restful API
 #      - 10800:10800 # ignite SQL port number.

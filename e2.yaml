@@ -1,0 +1,327 @@
+---
+Parameters:
+  KEYNAME:
+    Description: Name of an existing EC2 key pair for SSH access to the EC2 instance.
+    Type: AWS::EC2::KeyPair::KeyName
+  VPCID:
+    Description: Available VPCs
+    Type: AWS::EC2::VPC::Id
+  SUBNETID:
+    Description: Available Subnets
+    Type: "AWS::EC2::Subnet::Id"
+  StaticPublicIPbigid:
+    Description: Create Static Public IP Address
+    Type: String
+    AllowedValues: [true, false]
+    Default: false
+  StaticPublicIPmongo:
+    Description: Create Static Public IP Address
+    Type: String
+    AllowedValues: [true, false]
+    Default: false
+  MONGOUSER:
+    Description: Enter Mongo DB Username
+    Type: String
+    MinLength: 4
+    ConstraintDescription: The Mongo DB User value must be at least 4 characters in length.
+  MONGOPASS:
+    NoEcho: true
+    Description: Enter Mongo DB Password
+    Type: String
+    MinLength: 6
+    ConstraintDescription: The Mongo DB password value must be at least 6 characters in length.
+  BIGIDUSER:
+    Description: Enter BigID App Username
+    Type: String
+    MinLength: 4
+    ConstraintDescription: The BigID App Username value must be at least 4 characters in length.
+  BIGIDPASS:
+    NoEcho: true
+    Description: Enter BigID App Password
+    Type: String
+    MinLength: 6
+    ConstraintDescription: The BigID App password value must be at least 6 characters in length.
+  BIGIDVERSION:
+    Description: Enter BigID Version to deploy
+    Type: String
+    MinLength: 1
+    ConstraintDescription: The BigID Version cannot be blank.
+  VolumeSizeMongo:
+    Description: Choose Volume size between 500GB and 2000GB
+    Type: Number
+    Default: 500
+    MinValue: 500
+    MaxValue: 2000
+  VolumeSizeBigID:
+    Description: Choose Volume size between 500GB and 2000GB
+    Type: Number
+    Default: 500
+    MinValue: 500
+    MaxValue: 2000
+    ConstraintDescription: A value between 500 and 2000 is allowed.
+  VolumeType:
+    #Description: Choose Volume type gp2 (for General Purpose SSD) or io1 (for Provisioned IOPS SSD)
+    Description: Choose Volume type gp2 (for General Purpose SSD)
+    Type: String
+    Default: gp2
+    AllowedValues:
+    - gp2
+    #- io1
+    ConstraintDescription: Only allowed values are "gp2" or "io1"
+  InstanceTypeMongo:
+    Description: 'The instance type for Mongo DB EC2 instance.'
+    Type: String
+    Default: m4.xlarge
+    AllowedValues:
+    - m4.xlarge
+    - m4.4xlarge
+    - m4.10xlarge
+    - m4.16xlarge
+  InstanceTypeBigID:
+    Description: 'The instance type for BigID App EC2 instance.'
+    Type: String
+    Default: m4.xlarge
+    AllowedValues:
+    - m4.xlarge
+    - m4.2xlarge
+    - m4.10xlarge
+    - m4.16xlarge
+
+Conditions:
+  StaticPublicIPConditionBigID:
+     !Equals [true, !Ref StaticPublicIPbigid]
+  StaticPublicIPConditionMongo:
+     !Equals [true, !Ref StaticPublicIPmongo]
+
+Resources:
+  StaticPublicEIPbigid:
+    Type: AWS::EC2::EIP
+    Condition: StaticPublicIPConditionBigID
+    Properties:
+      InstanceId: !Ref BigID
+
+  StaticPublicEIPmongo:
+    Type: AWS::EC2::EIP
+    Condition: StaticPublicIPConditionMongo
+    Properties:
+      InstanceId: !Ref Mongo
+
+  Mongo:
+    Type: AWS::EC2::Instance
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          #sources:
+            #/home/ec2-user: "https://github.com/bigexchange/bigid-aws-marketplace-byol/tarball/master"
+          commands:
+            prepare:
+              command: "tar -xvf setup.tar && ./mongo/prepare.sh && ./mongo/init_mongo.sh $BIGID_MONGO_USER $BIGID_MONGO_PWD && cd mongo && ./install_mongo.sh"
+              cwd: "/home/ec2-user"
+              env:
+                BIGID_MONGO_USER: !Ref MONGOUSER
+                BIGID_MONGO_PWD: !Ref MONGOPASS
+    CreationPolicy:
+      ResourceSignal:
+        Timeout: PT5M
+    Properties:
+      ImageId: ami-0a67684a1c017bfe9
+      InstanceType: !Ref InstanceTypeMongo
+      KeyName: !Ref KEYNAME
+      SubnetId: !Ref SUBNETID
+      BlockDeviceMappings:
+        -
+          DeviceName: "/dev/xvda"
+          Ebs:
+            VolumeSize: !Ref VolumeSizeMongo
+            VolumeType: !Ref VolumeType
+            Encrypted: true
+      SecurityGroupIds:
+        - !Ref SSHSecurityGroup
+        - !Ref MongoSecurityGroup
+      Tags:
+        -
+          Key: "Name"
+          Value: "MongoDB"
+      UserData:
+        "Fn::Base64":
+          !Sub |
+            #!/bin/bash -xe
+            # Get the latest CloudFormation package
+            yum update -y aws-cfn-bootstrap
+            # Start cfn-init
+            /opt/aws/bin/cfn-init -s ${AWS::StackId} -r Mongo --region ${AWS::Region} || error_exit 'Failed to run cfn-init'
+            # All done so signal success
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource Mongo --region ${AWS::Region}
+
+  BigID:
+    Type: AWS::EC2::Instance
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          #sources:
+            #/home/ec2-user: "https://github.com/bigexchange/bigid-aws-marketplace-byol/tarball/master"
+          commands:
+            prepare:
+              command: "tar -xvf setup.tar && ./mongo/prepare.sh  && aws ecr get-login --region us-east-1 --no-include-email > login.sh && bash login.sh \
+              && ./init-bigid-mq.sh && ./init-bigid-scanner.sh && docker-compose -f ./bigid-ext-mongo-compose.yml up -d"
+              cwd: "/home/ec2-user"
+              env:
+                BIGID_MONGO_USER: !Ref MONGOUSER
+                BIGID_MONGO_PWD: !Ref MONGOPASS
+                #BIGID_ENV: "release"
+                BIGID_MONGO_HOST_EXT: !Sub "${Mongo.PrivateIp}"
+                DEFAULT_BIGID_USER: !Ref BIGIDUSER
+                DEFAULT_BIGID_PW: !Ref BIGIDPASS
+                BIGID_VERSION: !Ref BIGIDVERSION
+                MONGO_EXTERNAL_FULL_URL: !Sub "mongodb://${MONGOUSER}:${MONGOPASS}@${Mongo.PrivateIp}:27017/bigid-server?authSource=admin"
+    CreationPolicy:
+      ResourceSignal:
+        Timeout: PT10M
+    Properties:
+      ImageId: ami-0a67684a1c017bfe9
+      InstanceType: !Ref InstanceTypeBigID
+      KeyName: !Ref KEYNAME
+      SubnetId: !Ref SUBNETID
+      IamInstanceProfile: ECRreadonly
+      BlockDeviceMappings:
+        -
+          DeviceName: "/dev/xvda"
+          Ebs:
+            VolumeSize: !Ref VolumeSizeBigID
+            VolumeType: !Ref VolumeType
+            Encrypted: true
+      SecurityGroupIds:
+        - !Ref SSHSecurityGroup
+      Tags:
+        -
+          Key: "Name"
+          Value: "BigID"
+      UserData:
+        "Fn::Base64":
+          !Sub |
+            #!/bin/bash -xe
+            # Get the latest CloudFormation package
+            yum update -y aws-cfn-bootstrap
+            # Start cfn-init
+            /opt/aws/bin/cfn-init -s ${AWS::StackId} -r BigID --region ${AWS::Region} || error_exit 'Failed to run cfn-init'
+            # All done so signal success
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource BigID --region ${AWS::Region}
+
+  SSHSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      VpcId: !Ref VPCID
+      SecurityGroupIngress:
+      #- CidrIp: 0.0.0.0/0
+        #FromPort: 22
+        #IpProtocol: tcp
+        #ToPort: 22
+      - CidrIp: 0.0.0.0/0
+        FromPort: 443
+        IpProtocol: tcp
+        ToPort: 443
+
+  MongoSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable Access to Mongo DB
+      VpcId: !Ref VPCID
+      #SecurityGroupIngress:
+      #- CidrIp: !Sub "${BigID.PrivateIp}/32"
+        #FromPort: 27017
+        #IpProtocol: tcp
+        #ToPort: 27017
+  InboundRuleMongo:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 27017
+      ToPort: 27017
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+        - SSHSecurityGroup
+        - GroupId
+      GroupId:
+        Fn::GetAtt:
+        - MongoSecurityGroup
+        - GroupId
+
+Outputs:
+  BigIDVersion:
+    Description: BigID Version Deployed
+    Value: !Ref BIGIDVERSION
+    Export:
+      Name: !Sub "BIGIDVERSION-${AWS::StackName}"
+  BigIDPublicEndpoint:
+    Description: URL to access BigID app
+    Value: !Sub "https://${BigID.PublicIp}"
+    Export:
+      Name: !Sub "BigIDPublicEndpoint-${AWS::StackName}"
+  BigIDPrivateEndpoint:
+    Description: URL to access BigID app
+    Value: !Sub "https://${BigID.PrivateIp}"
+    Export:
+      Name: !Sub "BigIDPrivateEndpoint-${AWS::StackName}"
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "Network Configuration"
+        Parameters:
+          - VPCID
+          - SUBNETID
+      - Label:
+          default: "Amazon EC2 Configuration"
+        Parameters:
+          - KEYNAME
+      - Label:
+          default: "Mongo DB Configuration"
+        Parameters:
+          - MONGOUSER
+          - MONGOPASS
+          - InstanceTypeMongo
+          - VolumeSizeMongo
+          - StaticPublicIPmongo
+      - Label:
+          default: "BigID App Configuration"
+        Parameters:
+          - BIGIDVERSION
+          - BIGIDUSER
+          - BIGIDPASS
+          - InstanceTypeBigID
+          - VolumeSizeBigID
+          - StaticPublicIPbigid
+
+    ParameterLabels:
+      VPCID:
+        default: "Which VPC should this be deployed to?"
+      SUBNETID:
+        default: "Which Subnet should this be deployed to?"
+      KEYNAME:
+        default: "Which SSH Key should be configured?"
+      MONGOUSER:
+        default: "Configure a Mongo DB Username"
+      MONGOPASS:
+        default: "Configure a Mongo DB Password"
+      BIGIDVERSION:
+        default: "Configure BigID Version"
+      BIGIDUSER:
+        default: "Configure a BigID App Username"
+      BIGIDPASS:
+        default: "Configure a BigID App Password"
+      InstanceTypeMongo:
+        default: "Instance type for Mongo DB"
+      InstanceTypeBigID:
+        default: "Instance type for BigID"
+      VolumeSizeMongo:
+        default: "Volume size for Mongo DB instance"
+      VolumeSizeBigID:
+        default: "Volume size for BigID instance"
+      VolumeType:
+        default: "Volume type for Mongo DB and BigID instances"
+      StaticPublicIPbigid:
+         default: "Create Static Public IP Address for BigID?"
+      StaticPublicIPmongo:
+         default: "Create Static Public IP Address for Mongo?"
