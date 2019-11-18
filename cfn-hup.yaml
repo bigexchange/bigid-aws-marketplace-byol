@@ -124,7 +124,7 @@ Resources:
       ResourceSignal:
         Timeout: PT5M
     Properties:
-      ImageId: ami-0714932a30d293dd3
+      ImageId: ami-0401236a1d99ed7ec
       InstanceType: !Ref InstanceTypeMongo
       KeyName: !Ref KEYNAME
       SubnetId: !Ref SUBNETID
@@ -177,6 +177,7 @@ Resources:
                 mode: '000400'
                 owner: root
                 group: root
+
               '/etc/cfn/hooks.d/cfn-auto-reloader.conf':
                 content: !Sub |
                   [cfn-auto-reloader-hook]
@@ -187,8 +188,7 @@ Resources:
                 mode: '000400'
                 owner: root
                 group: root
-            #action=echo ${BIGIDVERSION} && docker-compose -f ./bigid-ext-mongo-compose.yml down && docker-compose -f ./bigid-ext-mongo-compose.yml up -d
-            #action=/opt/aws/bin/cfn-init --verbose --stack=${AWS::StackName} --region=${AWS::Region} --resource=BigID
+
             commands:
               prepare:
                 command: "tar -xvf setup.tar && ./mongo/prepare.sh  && aws ecr get-login --region us-east-1 --no-include-email > login.sh && bash login.sh \
@@ -214,10 +214,7 @@ Resources:
         Update_Environment:
           commands:
             deploy:
-              #command: echo "hello" >> /home/ec2-user/hello.log
               command: "docker-compose -f /home/ec2-user/bigid-ext-mongo-compose.yml up -d"
-              #command: "docker-compose -f /home/ec2-user/bigid-ext-mongo-compose.yml up -d &>> /var/log/UpdateEnvironment.log"
-              #cwd: "/home/ec2-user"
               env:
                 BIGID_MONGO_USER: !Ref MONGOUSER
                 BIGID_MONGO_PWD: !Ref MONGOPASS
@@ -231,7 +228,7 @@ Resources:
       ResourceSignal:
         Timeout: PT10M
     Properties:
-      ImageId: ami-0714932a30d293dd3
+      ImageId: ami-0401236a1d99ed7ec
       InstanceType: !Ref InstanceTypeBigID
       KeyName: !Ref KEYNAME
       SubnetId: !Ref SUBNETID

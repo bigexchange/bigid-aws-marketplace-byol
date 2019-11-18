@@ -1,20 +1,21 @@
 SHELL := /bin/bash
 
-HOSTNAME ?= $(shell hostname)
-PASSPHRASE ?= $(shell cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+HOSTNAME = rmq
+#HOSTNAME ?= $(shell hostname)
+PASSPHRASE = $(shell cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 
-PASSPHRASE_FILE = $(HOSTNAME)/.passphrase
+#PASSPHRASE_FILE = $(HOSTNAME)/.passphrase
 
-CLIENT_NAME ?= client-1
+CLIENT_NAME = client
 
 # ---------------------------------------------------------------------------------------------------------------------
 
 .PHONY: $(HOSTNAME)
 $(HOSTNAME): $(HOSTNAME)/ca
 
-$(PASSPHRASE_FILE):
-	@mkdir -p $(@D)
-	@echo '$(PASSPHRASE)' > $@
+#$(PASSPHRASE_FILE):
+#	@mkdir -p $(@D)
+#	@echo '$(PASSPHRASE)' > $@
 
 $(HOSTNAME)/ca: $(HOSTNAME)/ca/cacert.pem $(HOSTNAME)/ca/cacert.cer $(HOSTNAME)/server/cert.pem $(HOSTNAME)/server/keycert.p12 $(HOSTNAME)/$(CLIENT_NAME)/cert.pem $(HOSTNAME)/$(CLIENT_NAME)/keycert.p12
 
@@ -54,16 +55,16 @@ $(HOSTNAME)/%/req.pem: $(HOSTNAME)/%/key.pem
 $(HOSTNAME)/%/cert.pem: $(HOSTNAME)/ca/openssl.cnf $(HOSTNAME)/%/req.pem
 	openssl ca -config $(firstword $^) -in $(lastword $^) -out $@ -notext -batch -extensions $(shell basename $(@D))_ca_extensions
 
-$(HOSTNAME)/%/keycert.p12: $(HOSTNAME)/%/key.pem $(PASSPHRASE_FILE) $(HOSTNAME)/%/cert.pem
-	openssl pkcs12 -export -out $@ -in $(lastword $^) -inkey $(firstword $^) -passout file:$(PASSPHRASE_FILE)
+$(HOSTNAME)/%/keycert.p12: $(HOSTNAME)/%/key.pem $(HOSTNAME)/%/cert.pem
+	openssl pkcs12 -export -out $@ -in $(lastword $^) -inkey $(firstword $^) -passout pass:$$PASSPHRASE
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-.PHONY: export
+.PHONY: certfiles
 certfiles: $(HOSTNAME)
 	mkdir certfiles
 	cp $(HOSTNAME)/ca/cacert.pem certfiles/
 	cp $(HOSTNAME)/server/key.pem $(HOSTNAME)/server/cert.pem certfiles/
 
-cleanall:	
+cleanall:
 	rm -rf $(HOSTNAME) Makefile openssl.cnf.template
