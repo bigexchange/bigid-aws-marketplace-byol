@@ -124,7 +124,7 @@ Resources:
       ResourceSignal:
         Timeout: PT5M
     Properties:
-      ImageId: ami-01a41400ad859085c
+      ImageId: ami-0f7491d100599c172
       InstanceType: !Ref InstanceTypeMongo
       KeyName: !Ref KEYNAME
       SubnetId: !Ref SUBNETID
@@ -231,7 +231,7 @@ Resources:
       ResourceSignal:
         Timeout: PT10M
     Properties:
-      ImageId: ami-01a41400ad859085c
+      ImageId: ami-0f7491d100599c172
       InstanceType: !Ref InstanceTypeBigID
       KeyName: !Ref KEYNAME
       SubnetId: !Ref SUBNETID
