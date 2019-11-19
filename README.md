@@ -1,1 +1,0 @@
-# bigid-aws-marketplace-byol
