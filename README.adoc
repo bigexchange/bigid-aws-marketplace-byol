@@ -1,4 +1,4 @@
-= BigDI Deplyoment on AWS Marketplace
+= BigID Deplyoment on AWS Marketplace
 :source-hightlighter: pygments
 :toc:
 
