@@ -46,6 +46,7 @@ Parameters:
     Type: String
     MinLength: 1
     ConstraintDescription: The BigID Version cannot be blank.
+    Default: release-20191013
   VolumeSizeMongo:
     Description: Choose Volume size between 500GB and 2000GB
     Type: Number
@@ -111,11 +112,11 @@ Resources:
     Metadata:
       AWS::CloudFormation::Init:
         config:
-          #sources:
-            #/home/ec2-user: "https://github.com/bigexchange/bigid-aws-marketplace-byol/tarball/master"
+          sources:
+            /home/ec2-user: "https://github.com/bigexchange/bigid-aws-marketplace-byol/tarball/master"
           commands:
             prepare:
-              command: "tar -xvf setup.tar && ./mongo/prepare.sh && ./mongo/init_mongo.sh $BIGID_MONGO_USER $BIGID_MONGO_PWD && cd mongo && ./install_mongo.sh"
+              command: "./mongo/prepare.sh && ./mongo/init_mongo.sh $BIGID_MONGO_USER $BIGID_MONGO_PWD && cd mongo && ./install_mongo.sh"
               cwd: "/home/ec2-user"
               env:
                 BIGID_MONGO_USER: !Ref MONGOUSER
@@ -124,7 +125,7 @@ Resources:
       ResourceSignal:
         Timeout: PT5M
     Properties:
-      ImageId: ami-01accf733b5814556
+      ImageId: ami-0ff8a91507f77f867
       InstanceType: !Ref InstanceTypeMongo
       KeyName: !Ref KEYNAME
       SubnetId: !Ref SUBNETID
@@ -164,8 +165,8 @@ Resources:
             - Update_Environment
 
         Setup_Environment:
-            #sources:
-              #/home/ec2-user: "https://github.com/bigexchange/bigid-aws-marketplace-byol/tarball/master"
+            sources:
+              /home/ec2-user: "https://github.com/bigexchange/bigid-aws-marketplace-byol/tarball/master"
             files:
               '/etc/cfn/cfn-hup.conf':
                 content: !Sub |
@@ -191,7 +192,7 @@ Resources:
 
             commands:
               prepare:
-                command: "tar -xvf setup.tar && ./mongo/prepare.sh  && aws ecr get-login --region us-east-1 --no-include-email > login.sh && bash login.sh \
+                command: "./mongo/prepare.sh  && aws ecr get-login --region us-east-1 --no-include-email --registry-ids 403495124976 > login.sh && bash login.sh \
                 && ./init-bigid-mq.sh && ./init-bigid-scanner.sh && docker-compose -f ./bigid-ext-mongo-compose.yml up -d"
                 cwd: "/home/ec2-user"
                 env:
@@ -228,7 +229,7 @@ Resources:
       ResourceSignal:
         Timeout: PT10M
     Properties:
-      ImageId: ami-01accf733b5814556
+      ImageId: ami-0ff8a91507f77f867
       InstanceType: !Ref InstanceTypeBigID
       KeyName: !Ref KEYNAME
       SubnetId: !Ref SUBNETID

@@ -1,10 +1,8 @@
 SHELL := /bin/bash
 
 HOSTNAME = rmq
-#HOSTNAME ?= $(shell hostname)
-PASSPHRASE = $(shell cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 
-#PASSPHRASE_FILE = $(HOSTNAME)/.passphrase
+PASSPHRASE = $(shell cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 
 CLIENT_NAME = client
 
@@ -12,10 +10,6 @@ CLIENT_NAME = client
 
 .PHONY: $(HOSTNAME)
 $(HOSTNAME): $(HOSTNAME)/ca
-
-#$(PASSPHRASE_FILE):
-#	@mkdir -p $(@D)
-#	@echo '$(PASSPHRASE)' > $@
 
 $(HOSTNAME)/ca: $(HOSTNAME)/ca/cacert.pem $(HOSTNAME)/ca/cacert.cer $(HOSTNAME)/server/cert.pem $(HOSTNAME)/server/keycert.p12 $(HOSTNAME)/$(CLIENT_NAME)/cert.pem $(HOSTNAME)/$(CLIENT_NAME)/keycert.p12
 
