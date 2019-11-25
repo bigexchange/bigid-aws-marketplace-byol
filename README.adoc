@@ -64,6 +64,7 @@ In the “Outputs” tab you can view the IP address created to access BigID app
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/output.png[]
 
 Update BigID application:
+
 In AWS Console > Services > CloudFormation > Stacks > "BigID" (replace "BigID" with the stack name you've used)
 Click on "Update" > select "Use current tempplate" > click "Next".
 In "Specify stack details" locate the parameter named "Configure BigID Version" and enter the new version number you want to deploy. Click "Next"
