@@ -40,7 +40,7 @@ This step will provision BigID host and MongoDB Server
 image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=XLJetPack-VPC&templateURL=https://bigid-aws.s3.amazonaws.com/cfn-hup.yaml]
 
 Click on "Launch Stack" above or
-in AWS Console > Services > CloudFormation > Stacks > Create stack Select “Upload a template file” and click “Choose file” and choose cfn-bigid.yaml file and click “Next”.
+in AWS Console > Services > CloudFormation > Stacks > Create stack Select “Upload a template file”, click “Choose file”, choose cfn-bigid.yaml file and click “Next”.
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step1.png[]
 
 Once you use one of the .yaml files above to create a stack, you need to fill out the next fields:
