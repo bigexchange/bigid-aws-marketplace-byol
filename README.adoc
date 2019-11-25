@@ -66,7 +66,7 @@ image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/m
 === Update BigID application:
 
 In AWS Console > Services > CloudFormation > Stacks > "BigID" (replace "BigID" with the stack name you've used) +
-Click on "Update" > select "Use current tempplate" > click "Next".
+Click on "Update" > select "Use current tempplate" > click "Next". +
 In "Specify stack details" locate the parameter named "Configure BigID Version" and enter the new version number you want to deploy. Click "Next"
 In "Configure stack options" click "Next".
 In the final step "Review", you can see under "Change set preview" which resource will be modifed in the update.
