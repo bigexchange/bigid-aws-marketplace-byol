@@ -44,6 +44,7 @@ in AWS Console > Services > CloudFormation > Stacks > Create stack Select “Upl
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step1.png[]
 
 Fill out the next fields:
+
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step2.png[]
 
 On the next step (Configure stack options) we advise to use "Stack policy" to protect your MongoDB instance from deletion.
