@@ -1,0 +1,20 @@
+version: '2.1'
+
+volumes:
+    bigid-mongo-data:
+      external: true
+
+services:
+
+  bigid-mongo:
+    image: mongo:3.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - bigid-mongo-data:/data/db
+    container_name: bigid-mongo
+    entrypoint:
+      - mongod
+      - --auth
+    environment:
+      - TZ
