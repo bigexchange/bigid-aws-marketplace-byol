@@ -43,7 +43,7 @@ Click on "Launch Stack" above or
 in AWS Console > Services > CloudFormation > Stacks > Create stack Select “Upload a template file”, click “Choose file”, choose "cfn-bigid.yaml" file and click “Next”.
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step1.png[]
 
-Once you use one of the .yaml files above to create a stack, you need to fill out the next fields:
+Fill out the next fields:
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step2.png[]
 
 On the next step (Configure stack options) we advise to use "Stack policy" to protect your MongoDB instance from deletion.
