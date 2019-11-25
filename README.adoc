@@ -52,9 +52,11 @@ click on "Stack policy" drop arrow, click on "Upload a file", click on "Choose f
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step3.png
 
 On the last step (Review) click on “Create stack”
+
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step4.png
 
 After the stack is created successfully
+
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/status.png
 
 In the “Outputs” tab you can view the IP address created to access BigID application
