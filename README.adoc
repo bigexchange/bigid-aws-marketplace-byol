@@ -35,7 +35,7 @@ If you want to setup a fresh VPC with, click the below launch button:
 image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=XLJetPack-VPC&templateURL=https://s3.amazonaws.com/xl-jetpack-aws/setup-vpc.yaml]
 
 === Step 3 : Launch BigID CloudFormation stack
-This step will provision BigID host and MongoDB Server
+This step will provision BigID host and MongoDB Servera
 
 image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=XLJetPack-VPC&templateURL=https://bigid-aws.s3.amazonaws.com/cfn-hup.yaml]
 
