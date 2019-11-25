@@ -42,3 +42,5 @@ image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-sta
 Click on "Launch Stack" above or
 In AWS Console > Services > CloudFormation > Stacks > Create stack Select “Upload a template file” and click “Choose file” and choose cfn-bigid.yaml file and click “Next”
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step1.png
+Once you use one of the .yaml files above to create a stack, you need to fill out the next fields:
+image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/step2.png?raw=true
