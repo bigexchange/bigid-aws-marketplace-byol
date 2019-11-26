@@ -8,7 +8,7 @@ volumes:
 
 services:
   bigid-ui:
-    image: 403495124976.dkr.ecr.us-east-1.amazonaws.com/2ba1356e-b944-40e3-a585-25623721f6fd/cg-2527148120/bigid-ui:Placeholder1-latest
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-ui:${BIGID_VERSION}
     ports:
       - "443:443"
     links:
@@ -19,7 +19,7 @@ services:
     restart: always
 
   bigid-web:
-    image: 403495124976.dkr.ecr.us-east-1.amazonaws.com/2ba1356e-b944-40e3-a585-25623721f6fd/cg-2527148120/bigid-web:Placeholder1-latest
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-web:${BIGID_VERSION}
     expose:
       - "3000"
     links:
@@ -62,7 +62,7 @@ services:
     restart: always
 
   bigid-orch:
-    image: 403495124976.dkr.ecr.us-east-1.amazonaws.com/2ba1356e-b944-40e3-a585-25623721f6fd/cg-2527148120/bigid-orch:Placeholder1-latest
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-orch:${BIGID_VERSION}
     expose:
       - "3001"
     links:
@@ -113,7 +113,7 @@ services:
     restart: always
 
   bigid-orch2:
-    image: 403495124976.dkr.ecr.us-east-1.amazonaws.com/2ba1356e-b944-40e3-a585-25623721f6fd/cg-2527148120/bigid-orch:Placeholder1-latest
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-orch:${BIGID_VERSION}
     expose:
       - "3003"
     links:
@@ -154,7 +154,7 @@ services:
     restart: always
 
   bigid-scanner:
-    image: 403495124976.dkr.ecr.us-east-1.amazonaws.com/2ba1356e-b944-40e3-a585-25623721f6fd/cg-2527148120/bigid-scanner:Placeholder1-latest
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-scanner:${BIGID_VERSION}
     expose:
       - "9999"
     container_name: bigid-scanner
@@ -205,7 +205,7 @@ services:
         - APPEND_TO_JSON_LOGS
 
   bigid-corr-new:
-    image: 403495124976.dkr.ecr.us-east-1.amazonaws.com/2ba1356e-b944-40e3-a585-25623721f6fd/cg-2527148120/bigid-corr-new:Placeholder1-latest
+    image: 742572016373.dkr.ecr.us-east-1.amazonaws.com/bigid-corr-new:${BIGID_VERSION}
     expose:
       - "7082"
     container_name: bigid-corr-new
