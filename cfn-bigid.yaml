@@ -215,7 +215,8 @@ Resources:
         Update_Environment:
           commands:
             deploy:
-              command: "docker-compose -f /home/ec2-user/bigid-ext-mongo-compose.yml up -d"
+              command: "cd /home/ec2-user && aws ecr get-login --region us-east-1 --no-include-email > login.sh && bash login.sh \
+              && docker-compose -f /home/ec2-user/bigid-ext-mongo-compose.yml up -d"
               env:
                 BIGID_MONGO_USER: !Ref MONGOUSER
                 BIGID_MONGO_PWD: !Ref MONGOPASS
