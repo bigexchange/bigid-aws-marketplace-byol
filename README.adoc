@@ -23,7 +23,7 @@ This repository contains a set of https://aws.amazon.com/cloudformation/[AWS Clo
 
 
 == Step-by-step
-=== Step 1: Subscribe on the AWS Marketplace
+=== Step 1: Subscribe to AWS Marketplace
 https://docs.aws.amazon.com/marketplace/latest/buyerguide/buyer-getting-started.html[AWS Marketplace]
 
 === Step 2 : Configure a VPC and EC2 Key Pair (Optional)
