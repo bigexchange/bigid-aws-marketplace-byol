@@ -30,9 +30,9 @@ https://docs.aws.amazon.com/marketplace/latest/buyerguide/buyer-getting-started.
 To run the AWS CloudFormation templates in this repository, you must set up an http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Introduction.html[AWS VPC] and an http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html[EC2 Key Pair]. If these are already created, you can go directly to the next step.
 
 
-If you want to setup a fresh VPC with, click the below launch button:
+If you want to setup a fresh VPC, click the below launch button:
 
-image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=VPC&templateURL=https://s3.amazonaws.com/xl-jetpack-aws/setup-vpc.yaml]
+image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=VPC&templateURL=https://bigid-aws.s3.amazonaws.com/vpc-4azs.yaml]
 
 === Step 3 : Launch BigID CloudFormation stack
 This step will provision BigID host and MongoDB Server
