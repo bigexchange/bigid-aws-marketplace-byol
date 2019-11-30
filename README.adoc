@@ -65,7 +65,7 @@ image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/imag
 
 Insert License Key and apply. +
 
-image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/license.jpg[]
+image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/license.png[]
 
 
 
