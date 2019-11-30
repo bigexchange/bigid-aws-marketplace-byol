@@ -63,6 +63,11 @@ Browse the the IP Address and login using the BigID App Username and BigID App P
 
 image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/bigid.jpg[]
 
+Insert License Key and apply. +
+
+image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/license.jpg[]
+
+
 
 === Update BigID application:
 
