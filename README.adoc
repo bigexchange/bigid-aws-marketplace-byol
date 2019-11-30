@@ -71,6 +71,7 @@ Once License Key is applied BigID Application will be activated and a page will 
 If your license has expired, this page instructs you how to proceed to renew your license.
 image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/license2.jpg[]
 
+For any issue please contact our support@bigid.com[Support Team] 
 
 
 === Update BigID application:
