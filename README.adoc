@@ -13,7 +13,7 @@ BigID’s solution facilitates a bottom-up, correlation-driven approach for disc
 
 BigID generates a comprehensive mapping of identities, attributes, and distribution of personal data through automated scanning of configured data sources and applications.
 
-For more information: https://bigid.com
+For more information and trail request: https://bigid.com
 
 == Description
 Use Cloudformation templates to deploy BigID Application and MongoDB Server (Dual Server)
