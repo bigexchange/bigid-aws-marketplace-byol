@@ -57,7 +57,7 @@ After the stack is created successfully. +
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/status.png[]
 
 In the “Outputs” tab you can view the IP address created to access BigID application. +
-image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/output.png[]
+image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/bigid.jpg?raw=true[]
 
 Browse the the IP Address and login using the BigID App Username and BigID App Passwords. +
 
