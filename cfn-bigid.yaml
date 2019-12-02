@@ -100,12 +100,14 @@ Resources:
     Condition: StaticPublicIPConditionBigID
     Properties:
       InstanceId: !Ref BigID
+      Domain: vpc
 
   StaticPublicEIPmongo:
     Type: AWS::EC2::EIP
     Condition: StaticPublicIPConditionMongo
     Properties:
       InstanceId: !Ref Mongo
+      Domain: vpc
 
   Mongo:
     Type: AWS::EC2::Instance
