@@ -46,7 +46,7 @@ Parameters:
     Type: String
     MinLength: 1
     ConstraintDescription: The BigID Version cannot be blank.
-    Default: release-20191013
+    Default: release-20191029-latest
   VolumeSizeMongo:
     Description: Choose Volume size between 500GB and 2000GB
     Type: Number
