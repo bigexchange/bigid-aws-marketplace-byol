@@ -13,7 +13,7 @@ BigID’s solution facilitates a bottom-up, correlation-driven approach for disc
 
 BigID generates a comprehensive mapping of identities, attributes, and distribution of personal data through automated scanning of configured data sources and applications.
 
-For more information: https://bigid.com
+For more information and trail request: https://bigid.com
 
 == Description
 Use Cloudformation templates to deploy BigID Application and MongoDB Server (Dual Server)
@@ -23,21 +23,21 @@ This repository contains a set of https://aws.amazon.com/cloudformation/[AWS Clo
 
 
 == Step-by-step
-=== Step 1: Subscribe on the AWS Marketplace
+=== Step 1: Subscribe to AWS Marketplace
 https://docs.aws.amazon.com/marketplace/latest/buyerguide/buyer-getting-started.html[AWS Marketplace]
 
 === Step 2 : Configure a VPC and EC2 Key Pair (Optional)
 To run the AWS CloudFormation templates in this repository, you must set up an http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Introduction.html[AWS VPC] and an http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html[EC2 Key Pair]. If these are already created, you can go directly to the next step.
 
 
-If you want to setup a fresh VPC with, click the below launch button:
+If you want to setup a fresh VPC, click the below launch button:
 
-image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=XLJetPack-VPC&templateURL=https://s3.amazonaws.com/xl-jetpack-aws/setup-vpc.yaml]
+image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=VPC&templateURL=https://bigid-aws.s3.amazonaws.com/vpc-4azs.yaml]
 
 === Step 3 : Launch BigID CloudFormation stack
 This step will provision BigID host and MongoDB Server
 
-image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=XLJetPack-VPC&templateURL=https://bigid-aws.s3.amazonaws.com/cfn-hup.yaml]
+image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=BigID&templateURL=https://bigid-aws.s3.amazonaws.com/cfn-bigid.yaml]
 
 Click on "Launch Stack" above or
 in AWS Console > Services > CloudFormation > Stacks > Create stack Select “Upload a template file”, click “Choose file”, choose "cfn-bigid.yaml" file and click “Next”.
@@ -58,6 +58,21 @@ image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/m
 
 In the “Outputs” tab you can view the IP address created to access BigID application. +
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/output.png[]
+
+Browse the the IP Address and login using the BigID App Username and BigID App Passwords. +
+
+image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/bigid.jpg[]
+
+Insert License Key and apply. +
+
+image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/license.png[]
+
+Once License Key is applied BigID Application will be activated and a page will display how many days remain until your license expires.
+If your license has expired, this page instructs you how to proceed to renew your license.
+image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/license2.jpg[]
+
+For any issue please contact our Support Team at support@bigid.com 
+
 
 === Update BigID application:
 
