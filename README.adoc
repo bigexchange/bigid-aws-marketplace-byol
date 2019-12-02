@@ -7,13 +7,13 @@
 
 In an environment of record breaches of personal information and a proliferation of global privacy regulations, BigID aims to transform how enterprises protect and manage the privacy of personal data.
 
-BigID provides purpose-built technology to help organizations track and govern customer data at scale. By bringing data science to data privacy, BigID aims to give enterprises the software to safeguard and steward the most important asset organizations manage: their customer data.
+BigID provides purpose-built technology to help organizations track and govern customer data at scale. By bringing data science to data privacy, BigID aims to give enterprises the software to safeguard and steward the most important asset that organizations manage: their customer data.
 
 BigID’s solution facilitates a bottom-up, correlation-driven approach for discovering, indexing, and inventorying personal and private data by specific identities. BigID is designed to automatically update data inventories and flows as new data sources come online or when the underlying data changes.
 
 BigID generates a comprehensive mapping of identities, attributes, and distribution of personal data through automated scanning of configured data sources and applications.
 
-For more information and trail request: https://bigid.com
+For more information and to request a trial, visit https://bigid.com
 
 == Description
 Use Cloudformation templates to deploy BigID Application and MongoDB Server (Dual Server)
@@ -30,36 +30,43 @@ https://docs.aws.amazon.com/marketplace/latest/buyerguide/buyer-getting-started.
 To run the AWS CloudFormation templates in this repository, you must set up an http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Introduction.html[AWS VPC] and an http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html[EC2 Key Pair]. If these are already created, you can go directly to the next step.
 
 
-If you want to setup a fresh VPC, click the below launch button:
+If you want to setup a fresh VPC, click the launch button shown below:
 
 image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=VPC&templateURL=https://bigid-aws.s3.amazonaws.com/vpc-4azs.yaml]
 
 === Step 3 : Launch BigID CloudFormation stack
-This step will provision BigID host and MongoDB Server
+This step will provision the BigID host and MongoDB Server. 
 
 image:https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png[link=https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=BigID&templateURL=https://bigid-aws.s3.amazonaws.com/cfn-bigid.yaml]
 
-Click on "Launch Stack" above or
-in AWS Console > Services > CloudFormation > Stacks > Create stack Select “Upload a template file”, click “Choose file”, choose "cfn-bigid.yaml" file and click “Next”.
+Click on "Launch Stack", above; or, in AWS Console > Services > CloudFormation > Stacks > Create stack, do as follows: 
+Select “Upload a template file”. 
+Click “Choose file”. 
+Choose "cfn-bigid.yaml" file. 
+Click “Next”.
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step1.png[]
 
-Fill out the next fields: +
+Fill out the fields shown here: +
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step2.png[]
 
-On the next step (Configure stack options) we advise to use "Stack policy" to protect your MongoDB instance from deletion. +
-click on "Stack policy" drop arrow, click on "Upload a file", click "Choose file", choose "cft-policy.json", click “Next”. +
+In the next step (Configure stack options), BigID advise using "Stack policy" to protect your MongoDB instance from deletion. +
+Click the "Stack policy" drop arrow. 
+Click "Upload a file". 
+Click "Choose file". 
+Choose "cft-policy.json". 
+Click “Next”. +
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step3.png[]
 
-On the last step (Review) click on “Create stack”. +
+In the last step (Review) click “Create stack”. +
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/step4.png[]
 
-After the stack is created successfully. +
+After the stack is created successfully, do the following. +
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/status.png[]
 
-In the “Outputs” tab you can view the IP address created to access BigID application. +
+In the “Outputs” tab, you can view the IP address created to access BigID application. +
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/output.png[]
 
-Browse the the IP Address and login using the BigID App Username and BigID App Passwords. +
+Browse to the IP Address and login using the BigID App Username and BigID App Passwords. +
 
 image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/bigid.jpg[]
 
@@ -67,21 +74,22 @@ Insert License Key and apply. +
 
 image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/license.png[]
 
-Once License Key is applied BigID Application will be activated and a page will display how many days remain until your license expires.
+Once License Key is applied, the BigID Application will be activated and a page will display how many days remain until your license expires. 
 If your license has expired, this page instructs you how to proceed to renew your license.
 image:https://github.com/bigexchange/bigid-aws-marketplace-byol/blob/master/images/license2.jpg[]
 
-For any issue please contact our Support Team at support@bigid.com 
+For any issue, please contact our Support Team at support@bigid.com 
 
 
 === Update BigID application:
 
 In AWS Console > Services > CloudFormation > Stacks > "BigID" (replace "BigID" with the stack name you've used) +
 Click on "Update" > select "Use current tempplate" > click "Next". +
-In "Specify stack details" locate the parameter named "Configure BigID Version" and enter the new version number you want to deploy, Click "Next" +
+In "Specify stack details" locate the parameter named "Configure BigID Version" and enter the new version number you want to deploy.
+Click "Next" +
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/version.png[]
 In "Configure stack options" click "Next". +
-In the final step "Review", you can see under "Change set preview" which resource will be modifed in the update. +
+In the final step "Review", look under "Change set preview" to find out which resource will be modifed in the update. +
 The only resource that should be changed is "BigID" instance. +
 image:https://raw.githubusercontent.com/bigexchange/bigid-aws-marketplace-byol/master/images/update.png[]
 
