@@ -1,4 +1,4 @@
-= BigID Deplyoment on AWS Marketplace
+= BigID Deployment on AWS Marketplace
 :source-hightlighter: pygments
 :toc:
 
